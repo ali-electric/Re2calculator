@@ -1,0 +1,462 @@
+```html
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Busbar & Kabel Tembaga By:Rere - PUIL / IEC</title>
+    
+    <!-- PWA Manifest inline -->
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,{
+        %22name%22: %22Kalkulator Busbar & Kabel Elektrik Pro%22,
+        %22short_name%22: %22KalkulatorPanel%22,
+        %22start_url%22: %22.%22,
+        %22display%22: %22standalone%22,
+        %22background_color%22: %22%230f172a%22,
+        %22theme_color%22: %22%233b82f6%22,
+        %22icons%22: [
+            {
+                %22src%22: %22https://placehold.co/192x192/3b82f6/ffffff?text=%E2%9A%A1%22,
+                %22sizes%22: %22192x192%22,
+                %22type%22: %22image/png%22
+            },
+            {
+                %22src%22: %22https://placehold.co/512x512/3b82f6/ffffff?text=%E2%9A%A1%22,
+                %22sizes%22: %22512x512%22,
+                %22type%22: %22image/png%22
+            }
+        ]
+    }">
+    <meta name="theme-color" content="#3b82f6">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Inter & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
+
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-amber-500 flex items-center justify-center shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-bolt text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                        Busbar & Cable Sizer 
+                        <span class="text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full font-medium">PUIL / IEC</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Kalkulator Desain Panel & Instalasi Listrik Tenaga</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="installBtn" class="hidden items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded-lg transition shadow-sm">
+                    <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Install App</span>
+                </button>
+                <button onclick="resetForm()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-3 py-2 rounded-lg transition border border-slate-700">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Reset
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Panel: Input Parameter (Span 5) -->
+        <section class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-800">
+                    <h2 class="text-sm font-semibold uppercase tracking-wider text-blue-400 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders"></i> Parameter Instalasi
+                    </h2>
+                    <span class="text-xs text-slate-500">Real-time Calculation</span>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Sistem Tegangan & Fasa -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1.5">Sistem Tegangan / Fasa</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="phaseSystem" value="1" class="peer sr-only" onchange="calculate()">
+                                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl text-center peer-checked:border-blue-500 peer-checked:bg-blue-500/10 peer-checked:text-blue-400 hover:border-slate-700 transition">
+                                    <div class="font-semibold text-sm">1 Fasa</div>
+                                    <div class="text-[11px] text-slate-400">220V - 50Hz</div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="phaseSystem" value="3" checked class="peer sr-only" onchange="calculate()">
+                                <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl text-center peer-checked:border-blue-500 peer-checked:bg-blue-500/10 peer-checked:text-blue-400 hover:border-slate-700 transition">
+                                    <div class="font-semibold text-sm">3 Fasa</div>
+                                    <div class="text-[11px] text-slate-400">380V - 50Hz</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Arus Beban (In) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="block text-xs font-medium text-slate-300">Arus Beban Nominal (I<sub>n</sub>)</label>
+                            <span class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">Ampere (A)</span>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 font-bold">
+                                <i class="fa-solid fa-gauge-high text-xs"></i>
+                            </span>
+                            <input type="number" id="loadCurrent" value="160" min="1" max="5000" step="1" oninput="calculate()" 
+                                class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-3 text-white font-semibold text-base focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                    </div>
+
+                    <!-- Faktor Keamanan (Safety Factor / KHA) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="block text-xs font-medium text-slate-300">Faktor Keamanan / KHA</label>
+                            <span class="text-[10px] text-slate-400">Kapasitas Hantar Arus</span>
+                        </div>
+                        <select id="safetyFactor" onchange="calculate()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-white text-sm focus:outline-none focus:border-blue-500 transition">
+                            <option value="1.0">1.0x (Kondisi Ideal / Tanpa Faktor Tambahan)</option>
+                            <option value="1.25" selected>1.25x (Standar PUIL - Kapasitas Kabel/Panel)</option>
+                            <option value="1.35">1.35x (Heavy Duty / Beban Kontinu / Industri)</option>
+                        </select>
+                    </div>
+
+                    <!-- Margin Cadangan / Future Expansion -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="block text-xs font-medium text-slate-300">Cadangan / Future Expansion</label>
+                            <span class="text-[10px] text-slate-400">Pengembangan masa depan</span>
+                        </div>
+                        <select id="expansionMargin" onchange="calculate()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-3 text-white text-sm focus:outline-none focus:border-blue-500 transition">
+                            <option value="0">0% (Tanpa Cadangan)</option>
+                            <option value="0.10" selected>10% (Standar Pengembangan)</option>
+                            <option value="0.20">20% (Ekspansi Sedang)</option>
+                            <option value="0.25">25% (Ekspansi Maksimal / Beban Dinamis)</option>
+                        </select>
+                    </div>
+
+                    <!-- Metode Pemasangan / Suhu (Info Tambahan) -->
+                    <div class="grid grid-cols-2 gap-2 pt-2">
+                        <div class="bg-slate-950 border border-slate-800/80 p-3 rounded-xl">
+                            <div class="text-[11px] text-slate-400 mb-0.5">Tegangan Operasional</div>
+                            <div id="displayVoltage" class="text-sm font-bold text-white">380 Volt</div>
+                        </div>
+                        <div class="bg-slate-950 border border-slate-800/80 p-3 rounded-xl">
+                            <div class="text-[11px] text-slate-400 mb-0.5">Suhu Kerja Maks</div>
+                            <div class="text-sm font-bold text-white">70°C / 90°C</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-800 text-center">
+                <p class="text-[11px] text-slate-500">Berdasarkan Standar Persyaratan Umum Instalasi Listrik (PUIL) & IEC 60364</p>
+            </div>
+        </section>
+
+        <!-- Right Panel: Output & Recommendations (Span 7) -->
+        <section class="lg:col-span-7 space-y-6">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Arus Nominal & Desain -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-slate-800 opacity-30 text-7xl font-bold pointer-events-none">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <div class="text-xs text-slate-400 mb-1">Arus Beban Nominal (I<sub>n</sub>)</div>
+                    <div id="outNominal" class="text-2xl font-bold text-white mb-3">160 A</div>
+                    <div class="flex items-center justify-between text-xs pt-3 border-t border-slate-800/80">
+                        <span class="text-slate-400">Daya Perkiraan (Approx):</span>
+                        <span id="outPower" class="font-semibold text-blue-400">105.3 kW</span>
+                    </div>
+                </div>
+
+                <!-- Arus Desain Total -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-blue-900 opacity-20 text-7xl font-bold pointer-events-none">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div class="text-xs text-slate-400 mb-1">Arus Desain Total (I<sub>desain</sub>)</div>
+                    <div id="outDesignCurrent" class="text-2xl font-bold text-amber-400 mb-3">220 A</div>
+                    <div class="flex items-center justify-between text-xs pt-3 border-t border-slate-800/80">
+                        <span class="text-slate-400">Faktor Kali Total:</span>
+                        <span id="outMultiplier" class="font-semibold text-amber-400">1.375x</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+                    <h3 class="text-sm font-semibold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-bars"></i> Rekomendasi Busbar Tembaga (Cu)
+                    </h3>
+                    <span class="text-[11px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-medium">Kerapatan 1.5 - 2.0 A/mm²</span>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl">
+                            <span class="text-[11px] text-slate-400 block mb-1">Min. Luas Penampang</span>
+                            <span id="busbarMinArea" class="text-lg font-bold text-white">110.0 mm²</span>
+                        </div>
+                        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl sm:col-span-2">
+                            <span class="text-[11px] text-slate-400 block mb-1">Ukuran Busbar Pasaran Komersial</span>
+                            <span id="busbarCommercial" class="text-base font-bold text-amber-400">-</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950/60 border border-slate-800/80 p-3.5 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-circle-info text-blue-400 mt-0.5"></i>
+                        <div class="text-xs text-slate-300 leading-relaxed">
+                            <span id="busbarNote" class="font-medium text-white">Catatan Teknis Busbar:</span> Pastikan pemasangan di dalam panel memiliki jarak ventilasi yang baik atau menggunakan cat pelindung khusus busbar untuk disipasi panas optimal.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
+                    <h3 class="text-sm font-semibold uppercase tracking-wider text-blue-400 flex items-center gap-2">
+                        <i class="fa-solid fa-network-wired"></i> Rekomendasi Kabel Tembaga (NYM / NYY)
+                    </h3>
+                    <span class="text-[11px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded font-medium">Tabel KHA PUIL</span>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl">
+                            <span class="text-[11px] text-slate-400 block mb-1">Min. Penampang Kabel</span>
+                            <span id="cableMinArea" class="text-lg font-bold text-white">95 mm²</span>
+                        </div>
+                        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl sm:col-span-2">
+                            <span class="text-[11px] text-slate-400 block mb-1">Ukuran Standar & KHA Kabel</span>
+                            <span id="cableStandard" class="text-base font-bold text-blue-400">-</span>
+                        </div>
+                    </div>
+
+                    <div id="parallelWarningContainer" class="hidden bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5"></i>
+                        <div class="text-xs text-amber-200 leading-relaxed">
+                            <span class="font-bold block mb-0.5">Saran Paralel Kabel (Arus > 300A):</span>
+                            <span id="parallelText">Arus desain melebihi batas kabel tunggal standar yang umum. Disarankan menggunakan konfigurasi paralel kabel untuk efisiensi dan fleksibilitas instalasi panel.</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950/60 border border-slate-800/80 p-3.5 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-circle-info text-blue-400 mt-0.5"></i>
+                        <div class="text-xs text-slate-300 leading-relaxed">
+                            Rekomendasi jenis kabel: <span class="text-white font-medium">NYY</span> untuk penanaman/tray kabel luar ruangan, atau <span class="text-white font-medium">NYM</span> untuk instalasi dalam ruangan/gedung kering.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            Kalkulator Teknik Elektro & Panel Listrik • 100% Offline Ready PWA • Standar PUIL & IEC
+        </div>
+    </footer>
+
+    <script>
+        // Database Standar Busbar Tembaga (Tebal x Lebar mm -> KHA A)
+        const busbarTable = [
+            { t: 3, w: 15, area: 45, kha: 90, name: "3 x 15 mm (45 mm²)" },
+            { t: 3, w: 20, area: 60, kha: 120, name: "3 x 20 mm (60 mm²)" },
+            { t: 3, w: 25, area: 75, kha: 150, name: "3 x 25 mm (75 mm²)" },
+            { t: 3, w: 30, area: 90, kha: 180, name: "3 x 30 mm (90 mm²)" },
+            { t: 5, w: 30, area: 150, kha: 270, name: "5 x 30 mm (150 mm²)" },
+            { t: 5, w: 40, area: 200, kha: 360, name: "5 x 40 mm (200 mm²)" },
+            { t: 5, w: 50, area: 250, kha: 450, name: "5 x 50 mm (250 mm²)" },
+            { t: 6, w: 60, area: 360, kha: 630, name: "6 x 60 mm (360 mm²)" },
+            { t: 10, w: 50, area: 500, kha: 850, name: "10 x 50 mm (500 mm²)" },
+            { t: 10, w: 80, area: 800, kha: 1300, name: "10 x 80 mm (800 mm²)" },
+            { t: 10, w: 100, area: 1000, kha: 1600, name: "10 x 100 mm (1000 mm²)" }
+        ];
+
+        // Database Standar Kabel Tembaga (NYY / NYM) KHA PUIL Pendekatan Udara/Pipa
+        const cableTable = [
+            { size: 1.5, kha: 15 },
+            { size: 2.5, kha: 21 },
+            { size: 4, kha: 28 },
+            { size: 6, kha: 36 },
+            { size: 10, kha: 50 },
+            { size: 16, kha: 68 },
+            { size: 25, kha: 89 },
+            { size: 35, kha: 110 },
+            { size: 50, kha: 134 },
+            { size: 70, kha: 171 },
+            { size: 95, kha: 207 },
+            { size: 120, kha: 239 },
+            { size: 150, kha: 272 },
+            { size: 185, kha: 310 },
+            { size: 240, kha: 364 },
+            { size: 300, kha: 419 }
+        ];
+
+        function calculate() {
+            // Get inputs
+            const phase = parseInt(document.querySelector('input[name="phaseSystem"]:checked').value);
+            const inVal = parseFloat(document.getElementById('loadCurrent').value) || 0;
+            const safety = parseFloat(document.getElementById('safetyFactor').value);
+            const margin = parseFloat(document.getElementById('expansionMargin').value);
+
+            // Voltage display
+            const voltage = phase === 1 ? 220 : 380;
+            document.getElementById('displayVoltage').innerText = voltage + " Volt";
+
+            // Calculation
+            const iDesign = inVal * safety * (1 + margin);
+            const multiplier = safety * (1 + margin);
+
+            // Approx Power (kW) = (V * I * sqrt(3) * cos(phi) / 1000) assuming cos(phi) = 0.85
+            const cosPhi = 0.85;
+            let powerKw = 0;
+            if (phase === 3) {
+                powerKw = (Math.sqrt(3) * voltage * inVal * cosPhi) / 1000;
+            } else {
+                powerKw = (voltage * inVal * cosPhi) / 1000;
+            }
+
+            // Update UI Nominal & Design
+            document.getElementById('outNominal').innerText = inVal.toLocaleString('id-ID') + " A";
+            document.getElementById('outPower').innerText = powerKw.toFixed(1) + " kW (cos φ 0.85)";
+            document.getElementById('outDesignCurrent').innerText = iDesign.toFixed(1) + " A";
+            document.getElementById('outMultiplier').innerText = multiplier.toFixed(3) + "x";
+
+            // Busbar Calculation
+            const targetCurrentDensity = 1.8; 
+            const minBusbarArea = iDesign / targetCurrentDensity;
+            document.getElementById('busbarMinArea').innerText = minBusbarArea.toFixed(1) + " mm²";
+
+            // Find best commercial busbar
+            let selectedBusbar = busbarTable[busbarTable.length - 1];
+            for (let b of busbarTable) {
+                if (b.kha >= iDesign) {
+                    selectedBusbar = b;
+                    break;
+                }
+            }
+            document.getElementById('busbarCommercial').innerText = selectedBusbar.name + " (KHA ~" + selectedBusbar.kha + "A)";
+
+            // Cable Calculation
+            let selectedCable = cableTable[cableTable.length - 1];
+            for (let c of cableTable) {
+                if (c.kha >= iDesign) {
+                    selectedCable = c;
+                    break;
+                }
+            }
+            document.getElementById('cableMinArea').innerText = selectedCable.size + " mm²";
+            document.getElementById('cableStandard').innerText = "NYY / NYM " + selectedCable.size + " mm² (KHA ~" + selectedCable.kha + "A)";
+
+            // Parallel cable check if current is high (> 300A)
+            const parallelContainer = document.getElementById('parallelWarningContainer');
+            const parallelText = document.getElementById('parallelText');
+            if (iDesign > 300) {
+                parallelContainer.classList.remove('hidden');
+                const halfCurrent = iDesign / 2;
+                let halfCable = cableTable[cableTable.length - 1];
+                for (let c of cableTable) {
+                    if (c.kha >= halfCurrent) {
+                        halfCable = c;
+                        break;
+                    }
+                }
+                parallelText.innerHTML = `Arus desain sebesar <b>${iDesign.toFixed(1)} A</b> cukup tinggi. Disarankan menggunakan konfigurasi <b>2x Kabel ${halfCable.size} mm² per fasa</b> (masing-masing menahan ~${halfCable.kha}A) untuk mempermudah jalur instalasi dan fleksibilitas fisik panel.`;
+            } else {
+                parallelContainer.classList.add('hidden');
+            }
+        }
+
+        function resetForm() {
+            document.querySelector('input[name="phaseSystem"][value="3"]').checked = true;
+            document.getElementById('loadCurrent').value = 160;
+            document.getElementById('safetyFactor').value = "1.25";
+            document.getElementById('expansionMargin').value = "0.10";
+            calculate();
+        }
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    self.addEventListener('install', (e) => {
+                        e.waitUntil(caches.open('pwa-busbar-v1').then((cache) => {
+                            return cache.addAll(['./']);
+                        }));
+                    });
+                    self.addEventListener('fetch', (e) => {
+                        e.respondWith(
+                            caches.match(e.request).then((response) => {
+                                return response || fetch(e.request);
+                            })
+                        );
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'text/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(swUrl).catch(err => console.log('SW registration failed: ', err));
+            });
+        }
+
+        // PWA Install Prompt handling
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.classList.remove('hidden');
+            installBtn.classList.add('flex');
+        });
+
+            installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.classList.add('hidden');
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        // Initial calculation on load
+        window.onload = function() {
+            calculate();
+        };
+    </script>
+</body>
+</html>
+```
